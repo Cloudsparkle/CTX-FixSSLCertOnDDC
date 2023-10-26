@@ -1,11 +1,29 @@
-﻿# Initialize
+#
+.SYNOPSIS
+  Bind SSL certificate to Broker Service
+.DESCRIPTION
+  Removes exiting bindings and creates a new one with selected certificate on 0.0.0.0
+.INPUTS
+  SSL Certificate
+.OUTPUTS
+  None
+.NOTES
+  Version:        1.0
+  Author:         Bart Jacobs - @Cloudsparkle
+  Creation Date:  26/10/2023
+  Purpose/Change: Bind SSL certificate to Broker Service
+ .EXAMPLE
+  None
+#>
+
+# Initialize
 $binding = $null
 $certbindings = @()
 
 # Get GUID for Broker service
 Write-Host "Getting the GUID for the Citrix Broker Service..." -ForegroundColor Yellow
 $BrokerService = Get-WmiObject -Class Win32_Product | Select-String -Pattern "citrix broker service"
-if ($BrokerService -ne $null)
+if ($null -ne $BrokerService)
 {
   $BrokerService = $BrokerService.ToString()
   $BrokerServiceSplit1 = $BrokerService.split("{")
@@ -40,7 +58,7 @@ Else
 {
   Write-Host "Select the certificate to bind..." -ForegroundColor Yellow
   $SelectedCert = $servercerts | select Subject, FriendlyName, Thumbprint, NotBefore, NotAfter | Out-GridView -Title "Select Cert to bind:"  -OutputMode Single
-  if ($SelectedCert -eq $null)
+  if ($null -eq $SelectedCert)
   {
     Write-Host "No certificate selected, exiting" -ForegroundColor Red
     Exit 1
@@ -85,7 +103,7 @@ netsh http show sslcert | ForEach-Object{
     }
 }
 
-# Deleting all current bindings 
+# Deleting all current bindings
 Write-Host "`nRemoving all current bindings..." -ForegroundColor Yellow
 foreach ($certbinding in $certbindings)
 {
