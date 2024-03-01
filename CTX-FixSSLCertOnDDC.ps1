@@ -1,4 +1,4 @@
-#
+<#
 .SYNOPSIS
   Bind SSL certificate to Broker Service
 .DESCRIPTION
